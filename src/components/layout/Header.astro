@@ -1,0 +1,54 @@
+---
+import { SITE, CATEGORY_MAP } from '../../types';
+import MobileMenu from './MobileMenu.astro';
+
+const currentPath = Astro.url.pathname;
+
+function navClass(path: string, exact = false) {
+  const active = exact ? currentPath === path : currentPath.startsWith(path);
+  const base = 'no-underline px-3 py-2 text-sm font-medium rounded-md transition-colors inline-flex';
+  if (active) return `${base} text-white bg-white/15`;
+  return `${base} text-white/80 hover:text-white hover:bg-white/10`;
+}
+---
+
+<header class="bg-primary text-white sticky top-0 z-50 shadow-md">
+  <div class="container-main">
+    <nav class="flex items-center justify-between h-16 md:h-18" aria-label="Main navigation">
+      <a
+        href="/"
+        class="text-white no-underline font-bold text-lg md:text-xl tracking-tight hover:text-accent-light transition-colors"
+      >
+        <span class="text-accent">⚖️</span> {SITE.name}
+      </a>
+
+      <div class="hidden md:flex items-center gap-1">
+        <a href="/" class={navClass('/', true)}>Home</a>
+        <div class="relative group">
+          <button class={navClass('/categories') + ' flex items-center gap-1'} aria-haspopup="true">
+            Categories
+            <svg class="w-3 h-3" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+            </svg>
+          </button>
+          <div class="absolute top-full left-0 mt-1 bg-white text-gray-900 rounded-lg shadow-lg border border-border py-2 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
+            {Object.values(CATEGORY_MAP).map((cat) => (
+              <a
+                href={`/categories/${cat.slug}`}
+                class="block px-4 py-2 hover:bg-gray-50 text-sm no-underline hover:text-primary transition-colors"
+              >
+                <span class="mr-2">{cat.icon}</span>
+                {cat.title}
+              </a>
+            ))}
+          </div>
+        </div>
+        <a href="/articles" class={navClass('/articles')}>All Articles</a>
+        <a href="/about" class={navClass('/about', true)}>About</a>
+        <a href="/contact" class={navClass('/contact', true)}>Contact</a>
+      </div>
+
+      <MobileMenu />
+    </nav>
+  </div>
+</header>

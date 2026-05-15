@@ -1,0 +1,16 @@
+---
+import { buildFAQSchema } from '../../utils/structuredData';
+
+export interface Props {
+  faqs: { question: string; answer: string }[];
+}
+
+const { faqs } = Astro.props;
+if (!faqs || faqs.length === 0) {
+  return;
+}
+
+const schema = JSON.stringify(buildFAQSchema(faqs));
+---
+
+<script type="application/ld+json" set:html={schema} />

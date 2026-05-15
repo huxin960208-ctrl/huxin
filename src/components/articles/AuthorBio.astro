@@ -1,0 +1,18 @@
+---
+export interface Props {
+  author: string;
+  bio?: string;
+}
+
+const { author, bio } = Astro.props;
+---
+
+<div class="border-t border-border pt-6 mt-10 flex items-start gap-4">
+  <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+    {author.charAt(0)}
+  </div>
+  <div>
+    <p class="font-semibold text-primary">{author}</p>
+    {bio && <p class="text-sm text-muted mt-1">{bio}</p>}
+  </div>
+</div>

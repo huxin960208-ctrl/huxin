@@ -1,0 +1,34 @@
+---
+import { buildArticleSchema } from '../../utils/structuredData';
+import type { Category } from '../../types';
+import { SITE } from '../../types';
+
+export interface Props {
+  title: string;
+  description: string;
+  url: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  author: string;
+  featuredImage?: string;
+  category: Category;
+}
+
+const { title, description, url, pubDate, updatedDate, author, featuredImage, category } = Astro.props;
+
+const articleUrl = `${SITE.url}${url}`;
+const schema = JSON.stringify(
+  buildArticleSchema({
+    title,
+    description,
+    url: articleUrl,
+    pubDate,
+    updatedDate,
+    author,
+    featuredImage,
+    category,
+  })
+);
+---
+
+<script type="application/ld+json" set:html={schema} />

@@ -1,0 +1,83 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../components/layout/BaseLayout.astro';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import Pagination from '../../components/navigation/Pagination.astro';
+import CategoryNav from '../../components/navigation/CategoryNav.astro';
+import ArticleGrid from '../../components/articles/ArticleGrid.astro';
+import SidebarAd from '../../components/ads/SidebarAd.astro';
+import { CATEGORIES, CATEGORY_MAP, SITE, type Category } from '../../types';
+
+export async function getStaticPaths() {
+  return CATEGORIES.map((category) => ({ params: { category } }));
+}
+
+const { category } = Astro.params;
+const ARTICLES_PER_PAGE = 9;
+
+if (!CATEGORIES.includes(category as Category)) {
+  return Astro.redirect('/404');
+}
+
+const cat = category as Category;
+const info = CATEGORY_MAP[cat];
+
+const allArticles = await getCollection(
+  'articles',
+  ({ data }) => !data.draft && data.category === cat
+);
+const sortedArticles = allArticles.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+
+const totalPages = Math.ceil(sortedArticles.length / ARTICLES_PER_PAGE);
+const pageArticles = sortedArticles.slice(0, ARTICLES_PER_PAGE);
+---
+
+<BaseLayout
+  title={`${info.title} Guides & Resources`}
+  description={info.description}
+  canonicalURL={`${SITE.url}/categories/${cat}`}
+>
+  <div class="container-main py-8 md:py-12">
+    <Breadcrumbs
+      items={[
+        { label: 'Categories', href: '/categories' },
+        { label: info.title },
+      ]}
+    />
+
+    <div class="flex gap-8">
+      <div class="flex-1">
+        <h1 class="text-3xl md:text-4xl mb-2">
+          {info.icon} {info.title}
+        </h1>
+        <p class="text-muted mb-6 max-w-2xl">{info.description}</p>
+
+        <CategoryNav
+          categories={CATEGORIES as unknown as Category[]}
+          selected={cat}
+        />
+
+        {pageArticles.length > 0 ? (
+          <div class="mt-8">
+            <ArticleGrid articles={pageArticles} />
+            <Pagination
+              currentPage={1}
+              totalPages={totalPages}
+              baseUrl={`/categories/${cat}`}
+            />
+          </div>
+        ) : (
+          <div class="text-center py-16 mt-8">
+            <h2 class="text-xl text-muted">No articles in this category yet</h2>
+            <p class="text-muted mt-2">Check back soon or browse other categories above.</p>
+          </div>
+        )}
+      </div>
+
+      <!-- Sidebar -->
+      <div class="hidden lg:block w-80 flex-shrink-0">
+        <SidebarAd />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

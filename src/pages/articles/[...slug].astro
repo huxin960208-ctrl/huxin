@@ -1,0 +1,182 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../components/layout/BaseLayout.astro';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import TableOfContents from '../../components/articles/TableOfContents.astro';
+import ArticleMeta from '../../components/articles/ArticleMeta.astro';
+import FAQSection from '../../components/articles/FAQSection.astro';
+import KeyTakeaways from '../../components/articles/KeyTakeaways.astro';
+import AuthorBio from '../../components/articles/AuthorBio.astro';
+import InArticleAd from '../../components/ads/InArticleAd.astro';
+import ArticleSchema from '../../components/seo/ArticleSchema.astro';
+import FAQSchema from '../../components/seo/FAQSchema.astro';
+import BreadcrumbSchema from '../../components/seo/BreadcrumbSchema.astro';
+import { getCategoryTitle, getCategoryUrl, getArticleUrl } from '../../utils/urlUtils';
+import { SITE } from '../../types';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('articles', ({ data }) => !data.draft);
+  return articles.map((article) => ({
+    params: { slug: article.slug },
+    props: { article },
+  }));
+}
+
+const { article } = Astro.props;
+const { data, body, slug } = article as CollectionEntry<'articles'>;
+
+// Render the Markdown body to extract headings for TOC
+const articleContent = await article.render();
+const headingMatches = body.match(/^#{2,3}\s+.+$/gm) ?? [];
+const headings = headingMatches.map((h: string) => {
+  const depth = h.startsWith('###') ? 3 : 2;
+  const text = h.replace(/^#{2,3}\s+/, '');
+  return { depth, text };
+});
+
+const articleUrl = getArticleUrl(slug);
+const fullUrl = `${SITE.url}${articleUrl}`;
+
+// Build schema JSON-LD scripts
+const breadcrumbItems = [
+  { name: 'Articles', url: '/articles' },
+  { name: getCategoryTitle(data.category), url: getCategoryUrl(data.category) },
+  { name: data.title, url: articleUrl },
+];
+---
+
+<BaseLayout
+  title={data.title}
+  description={data.description}
+  canonicalURL={fullUrl}
+  ogType="article"
+  ogImage={data.featuredImage ? `${SITE.url}${data.featuredImage}` : undefined}
+>
+  <ArticleSchema
+    title={data.title}
+    description={data.description}
+    url={articleUrl}
+    pubDate={data.pubDate}
+    updatedDate={data.updatedDate}
+    author={data.author}
+    featuredImage={data.featuredImage}
+    category={data.category}
+  />
+  {data.faq && data.faq.length > 0 && <FAQSchema faqs={data.faq} />}
+  <BreadcrumbSchema items={breadcrumbItems} />
+
+  <article class="py-8 md:py-12">
+    <div class="container-article">
+      <Breadcrumbs
+        items={[
+          { label: 'Articles', href: '/articles' },
+          { label: getCategoryTitle(data.category), href: getCategoryUrl(data.category) },
+          { label: data.title },
+        ]}
+      />
+
+      <!-- Article Header -->
+      <header class="mb-8">
+        <h1 class="text-3xl md:text-4xl lg:text-5xl leading-tight">{data.title}</h1>
+        <div class="mt-4">
+          <ArticleMeta
+            pubDate={data.pubDate}
+            category={data.category}
+            author={data.author}
+          >
+            {body}
+          </ArticleMeta>
+        </div>
+      </header>
+
+      <!-- Featured Image -->
+      {data.featuredImage && (
+        <img
+          src={data.featuredImage}
+          alt={data.featuredImageAlt ?? data.title}
+          class="w-full rounded-lg mb-8 max-h-96 object-cover"
+          loading="eager"
+          width="800"
+          height="400"
+        />
+      )}
+
+      <!-- Two-column layout: TOC sidebar + article body -->
+      <div class="flex gap-8">
+        <!-- Table of Contents - Sticky Sidebar -->
+        {headings.length > 3 && (
+          <aside class="hidden lg:block w-64 flex-shrink-0">
+            <div class="sticky top-20">
+              <TableOfContents headings={headings} />
+              <div class="mt-6">
+                <slot name="sidebar-ad">
+                  <div class="ad-slot min-h-[250px]">
+                    <span>Advertisement</span>
+                  </div>
+                </slot>
+              </div>
+            </div>
+          </aside>
+        )}
+
+        <!-- Article Body -->
+        <div class="flex-1 min-w-0">
+          {headings.length > 3 && (
+            <div class="lg:hidden mb-8">
+              <TableOfContents headings={headings} />
+            </div>
+          )}
+
+          <!-- Key Takeaways (if present) -->
+          {data.keyTakeaways && data.keyTakeaways.length > 0 && (
+            <KeyTakeaways takeaways={data.keyTakeaways} />
+          )}
+
+          <!-- Markdown Content -->
+          <div
+            class="article-body"
+            <articleContent.Content />
+          />
+
+          <!-- In-article Ad after content -->
+          <InArticleAd />
+
+          <!-- FAQ Section -->
+          {data.faq && data.faq.length > 0 && (
+            <FAQSection faqs={data.faq} />
+          )}
+
+          <!-- Second In-article Ad after FAQ -->
+          {data.faq && data.faq.length > 0 && <InArticleAd />}
+
+          <!-- Author Bio -->
+          <AuthorBio author={data.author} bio={data.authorBio} />
+        </div>
+      </div>
+
+      <!-- Related Articles (same category) -->
+      <footer class="mt-12 pt-8 border-t border-border">
+        <h2 class="text-xl mb-4">More {getCategoryTitle(data.category)} Articles</h2>
+        {
+          (async () => {
+            const related = (await getCollection('articles', ({ data: d }) =>
+              !d.draft && d.category === data.category && d.title !== data.title
+            )).slice(0, 3);
+            return related.length > 0 ? (
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {related.map((rel) => (
+                  <article class="card">
+                    <a href={getArticleUrl(rel.slug)} class="no-underline">
+                      <h3 class="text-lg mb-1 hover:text-primary-light transition-colors">{rel.data.title}</h3>
+                    </a>
+                    <p class="text-sm text-muted">{rel.data.description.slice(0, 100)}...</p>
+                  </article>
+                ))}
+              </div>
+            ) : null;
+          })()
+        }
+      </footer>
+    </div>
+  </article>
+</BaseLayout>

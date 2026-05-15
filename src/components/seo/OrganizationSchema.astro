@@ -1,0 +1,6 @@
+---
+import { buildOrganizationSchema } from '../../utils/structuredData';
+const schema = JSON.stringify(buildOrganizationSchema());
+---
+
+<script type="application/ld+json" set:html={schema} />

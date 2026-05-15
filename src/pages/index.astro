@@ -1,0 +1,106 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../components/layout/BaseLayout.astro';
+import CategoryNav from '../components/navigation/CategoryNav.astro';
+import ArticleCard from '../components/articles/ArticleCard.astro';
+import FeaturedArticle from '../components/articles/FeaturedArticle.astro';
+import TrustBadges from '../components/ui/TrustBadges.astro';
+import AdUnit from '../components/ads/AdUnit.astro';
+import { CATEGORIES, CATEGORY_MAP, SITE, type Category } from '../types';
+
+const articles = await getCollection('articles', ({ data }) => !data.draft);
+const sortedArticles = articles.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+
+const featuredArticle = sortedArticles.find((a) => a.data.isFeatured) ?? sortedArticles[0];
+
+// Get latest 2 articles per category
+function getCategoryArticles(cat: Category) {
+  return sortedArticles
+    .filter((a) => a.data.category === cat)
+    .slice(0, 3);
+}
+
+// Count articles per category
+const articleCounts = Object.fromEntries(
+  CATEGORIES.map((cat) => [cat, sortedArticles.filter((a) => a.data.category === cat).length])
+) as Record<Category, number>;
+---
+
+<BaseLayout
+  title={SITE.tagline}
+  description="Free, comprehensive guides on personal injury law. Learn about car accident settlements, slip and fall claims, medical malpractice, workplace injuries, and wrongful death."
+  canonicalURL={SITE.url}
+>
+
+  <!-- Hero Section -->
+  <section class="bg-primary text-white py-12 md:py-20">
+    <div class="container-main text-center">
+      <h1 class="text-white text-3xl md:text-5xl lg:text-6xl font-bold leading-tight max-w-4xl mx-auto">
+        {SITE.tagline}
+      </h1>
+      <p class="text-white/70 text-lg md:text-xl mt-4 max-w-2xl mx-auto">
+        Free, in-depth guides on car accidents, slip and fall, medical malpractice,
+        workplace injuries, and wrongful death claims.
+      </p>
+      <div class="mt-8">
+        <a href="/articles" class="btn-primary bg-accent hover:bg-accent-light text-lg px-8 py-4 inline-block text-white no-underline">
+          Browse All Articles
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Category Cards -->
+  <section class="container-main py-10">
+    <CategoryNav
+      categories={CATEGORIES as unknown as Category[]}
+      articleCounts={articleCounts}
+    />
+  </section>
+
+  <!-- Featured Article -->
+  {featuredArticle && (
+    <section class="container-main pb-8">
+      <h2 class="text-xl font-bold uppercase tracking-wider text-muted mb-4">Featured Article</h2>
+      <FeaturedArticle article={featuredArticle} />
+    </section>
+  )}
+
+  <!-- Trust Badges -->
+  <section class="container-main py-6">
+    <TrustBadges />
+  </section>
+
+  <!-- Category Sections -->
+  {CATEGORIES.map((cat) => {
+    const info = CATEGORY_MAP[cat];
+    const catArticles = getCategoryArticles(cat);
+    if (catArticles.length === 0) return null;
+    return (
+      <section class="container-main py-8">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-2xl md:text-3xl">
+            {info.icon} {info.title}
+          </h2>
+          <a
+            href={`/categories/${cat}`}
+            class="text-sm text-primary-light no-underline hover:underline font-medium"
+          >
+            View all {articleCounts[cat]} articles &rarr;
+          </a>
+        </div>
+        <p class="text-muted mb-6 -mt-4">{info.description}</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {catArticles.map((article) => (
+            <ArticleCard article={article} />
+          ))}
+        </div>
+      </section>
+    );
+  })}
+
+  <!-- Above-footer ad -->
+  <section class="container-main py-8">
+    <AdUnit slot="footer" />
+  </section>
+</BaseLayout>

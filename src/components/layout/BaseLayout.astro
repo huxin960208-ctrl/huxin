@@ -1,0 +1,41 @@
+---
+import SEOHead from '../seo/SEOHead.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import Disclaimer from '../ui/Disclaimer.astro';
+
+export interface Props {
+  title: string;
+  description: string;
+  canonicalURL?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  noindex?: boolean;
+  schemaScripts?: string;
+}
+
+const props = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <SEOHead
+      title={props.title}
+      description={props.description}
+      canonicalURL={props.canonicalURL}
+      ogImage={props.ogImage}
+      ogType={props.ogType}
+      noindex={props.noindex}
+      schemaScripts={props.schemaScripts}
+    />
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <Header />
+    <main class="flex-1">
+      <slot />
+    </main>
+    <Disclaimer />
+    <Footer />
+  </body>
+</html>

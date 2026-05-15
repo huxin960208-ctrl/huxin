@@ -1,0 +1,34 @@
+---
+import { ADSENSE_CONFIG, ADSENSE_PLACEHOLDER_TEXT } from '../../utils/constants';
+
+export interface Props {
+  slot: keyof typeof ADSENSE_CONFIG.slots;
+  class?: string;
+}
+
+const { slot, class: className } = Astro.props;
+const { enabled, publisherId, slots } = ADSENSE_CONFIG;
+const slotConfig = slots[slot];
+---
+
+<div class={`ad-container ${className ?? ''}`}>
+  {enabled ? (
+    <>
+      <ins
+        class="adsbygoogle"
+        style="display:block"
+        data-ad-client={publisherId}
+        data-ad-slot={slotConfig.slotId}
+        data-ad-format={slotConfig.format}
+        data-full-width-responsive="true"
+      />
+      <script is:inline>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </>
+  ) : (
+    <div class="ad-slot">
+      <span>{ADSENSE_PLACEHOLDER_TEXT}</span>
+    </div>
+  )}
+</div>

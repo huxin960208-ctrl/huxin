@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#1a365d"/>
+  <rect x="60" y="60" width="1080" height="510" rx="16" fill="none" stroke="#c59a3e" stroke-width="2"/>
+  <text x="600" y="250" font-family="Georgia, serif" font-size="72" fill="#fafaf9" text-anchor="middle" font-weight="bold">Injury Rights Guide</text>
+  <text x="600" y="340" font-family="Georgia, serif" font-size="36" fill="#c59a3e" text-anchor="middle">Understanding Your Personal Injury Rights</text>
+  <line x1="250" y1="400" x2="950" y2="400" stroke="#c59a3e" stroke-width="2" opacity="0.4"/>
+  <text x="600" y="470" font-family="Georgia, serif" font-size="24" fill="#d4af5e" text-anchor="middle">Free, In-Depth Legal Guides</text>
+</svg>

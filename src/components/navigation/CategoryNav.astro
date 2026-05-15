@@ -1,0 +1,39 @@
+---
+import { CATEGORY_MAP, type Category } from '../../types';
+
+export interface Props {
+  categories: Category[];
+  selected?: Category;
+  articleCounts?: Record<Category, number>;
+}
+
+const { categories, selected, articleCounts } = Astro.props;
+---
+
+<nav aria-label="Category navigation">
+  <ul class="flex flex-wrap gap-2">
+    {categories.map((cat) => {
+      const info = CATEGORY_MAP[cat];
+      const isActive = cat === selected;
+      const count = articleCounts?.[cat];
+      return (
+        <li>
+          <a
+            href={`/categories/${cat}`}
+            class={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium no-underline transition-colors ${
+              isActive
+                ? 'bg-primary text-white'
+                : 'bg-white border border-border text-primary hover:bg-primary/5'
+            }`}
+          >
+            <span>{info.icon}</span>
+            {info.title}
+            {count !== undefined && (
+              <span class={`text-xs ${isActive ? 'text-white/70' : 'text-muted'}`}>({count})</span>
+            )}
+          </a>
+        </li>
+      );
+    })}
+  </ul>
+</nav>

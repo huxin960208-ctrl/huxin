@@ -1,0 +1,21 @@
+---
+import { getEntry } from 'astro:content';
+import BaseLayout from '../components/layout/BaseLayout.astro';
+import Breadcrumbs from '../components/navigation/Breadcrumbs.astro';
+import { SITE } from '../types';
+
+const page = await getEntry('pages', 'disclaimer');
+const { Content } = await page!.render();
+---
+
+<BaseLayout
+  title={page!.data.title}
+  description={page!.data.description}
+  canonicalURL={`${SITE.url}/disclaimer`}
+>
+  <div class="container-article py-8 md:py-12">
+    <Breadcrumbs items={[{ label: 'Disclaimer' }]} />
+    <h1 class="text-3xl md:text-4xl mb-8">{page!.data.title}</h1>
+    <div class="prose max-w-none"><Content /></div>
+  </div>
+</BaseLayout>
