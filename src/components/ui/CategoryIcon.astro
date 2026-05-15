@@ -1,0 +1,27 @@
+---
+import type { Category } from '../../types';
+
+export interface Props {
+  category: Category;
+  size?: 'sm' | 'md';
+}
+
+const { category, size = 'md' } = Astro.props;
+
+// Color mapping per category
+const colors: Record<Category, { bg: string; dot: string }> = {
+  'car-accidents': { bg: '#eff6ff', dot: '#3b82f6' },
+  'slip-and-fall': { bg: '#fff7ed', dot: '#f97316' },
+  'medical-malpractice': { bg: '#fef2f2', dot: '#ef4444' },
+  'workplace-injuries': { bg: '#f0fdf4', dot: '#22c55e' },
+  'wrongful-death': { bg: '#faf5ff', dot: '#a855f7' },
+};
+
+const { bg, dot } = colors[category];
+const dim = size === 'sm' ? 20 : 24;
+---
+
+<svg width={dim} height={dim} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="flex-shrink-0">
+  <circle cx="12" cy="12" r="12" fill={bg} />
+  <circle cx="12" cy="12" r="5" fill={dot} />
+</svg>

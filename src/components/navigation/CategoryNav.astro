@@ -1,5 +1,6 @@
 ---
 import { CATEGORY_MAP, type Category } from '../../types';
+import CategoryIcon from '../ui/CategoryIcon.astro';
 
 export interface Props {
   categories: Category[];
@@ -25,7 +26,7 @@ const { categories, selected } = Astro.props;
                 : 'bg-gray-100 text-primary hover:bg-gray-200'
             }`}
           >
-            <span class="text-xs leading-none">{info.icon}</span>
+            <CategoryIcon category={cat} size="sm" />
             <span>{info.title}</span>
           </a>
         </li>

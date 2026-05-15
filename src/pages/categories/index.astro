@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../components/layout/BaseLayout.astro';
 import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import CategoryIcon from '../../components/ui/CategoryIcon.astro';
 import { CATEGORIES, CATEGORY_MAP, SITE, type Category } from '../../types';
 
 const articles = await getCollection('articles', ({ data }) => !data.draft);
@@ -32,7 +33,7 @@ const articleCounts = Object.fromEntries(
             href={`/categories/${cat}`}
             class="group flex items-start gap-4 bg-white rounded-lg border border-border p-5 md:p-6 no-underline hover:border-primary/20 hover:shadow-sm transition-all duration-200"
           >
-            <span class="text-xl leading-none flex-shrink-0">{info.icon}</span>
+            <CategoryIcon category={cat} />
             <div class="min-w-0">
               <h2 class="text-lg font-bold text-primary group-hover:text-primary-light transition-colors mb-1">{info.title}</h2>
               <p class="text-sm text-muted leading-relaxed mb-2">{info.description}</p>
