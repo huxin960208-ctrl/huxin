@@ -13,14 +13,12 @@ const sortedArticles = articles.sort((a, b) => b.data.pubDate.getTime() - a.data
 
 const featuredArticle = sortedArticles.find((a) => a.data.isFeatured) ?? sortedArticles[0];
 
-// Get latest 2 articles per category
 function getCategoryArticles(cat: Category) {
   return sortedArticles
     .filter((a) => a.data.category === cat)
     .slice(0, 3);
 }
 
-// Count articles per category
 const articleCounts = Object.fromEntries(
   CATEGORIES.map((cat) => [cat, sortedArticles.filter((a) => a.data.category === cat).length])
 ) as Record<Category, number>;
@@ -33,71 +31,81 @@ const articleCounts = Object.fromEntries(
 >
 
   <!-- Hero Section -->
-  <section class="bg-primary text-white py-12 md:py-20">
+  <section class="bg-gradient-to-b from-primary to-primary-light text-white py-16 md:py-24">
     <div class="container-main text-center">
-      <h1 class="text-white text-3xl md:text-5xl lg:text-6xl font-bold leading-tight max-w-4xl mx-auto">
+      <h1 class="text-white text-3xl md:text-5xl lg:text-6xl font-bold leading-tight max-w-3xl mx-auto">
         {SITE.tagline}
       </h1>
-      <p class="text-white/70 text-lg md:text-xl mt-4 max-w-2xl mx-auto">
+      <p class="text-white/60 text-base md:text-lg mt-4 max-w-xl mx-auto leading-relaxed">
         Free, in-depth guides on car accidents, slip and fall, medical malpractice,
         workplace injuries, and wrongful death claims.
       </p>
-      <div class="mt-8">
-        <a href="/articles" class="btn-primary bg-accent hover:bg-accent-light text-lg px-8 py-4 inline-block text-white no-underline">
+      <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <a href="/articles" class="inline-block bg-accent hover:bg-accent-light text-white font-semibold px-6 py-3 rounded-lg transition-colors no-underline text-sm md:text-base">
           Browse All Articles
+        </a>
+        <a href="#categories" class="inline-block bg-white/10 hover:bg-white/20 text-white font-semibold px-6 py-3 rounded-lg transition-colors no-underline text-sm md:text-base">
+          Explore by Category
         </a>
       </div>
     </div>
   </section>
 
-  <!-- Category Cards -->
-  <section class="container-main py-10">
-    <CategoryNav
-      categories={CATEGORIES as unknown as Category[]}
-      articleCounts={articleCounts}
-    />
+  <!-- Category Nav -->
+  <section class="bg-white border-b border-border sticky top-16 z-40">
+    <div class="container-main py-3">
+      <CategoryNav
+        categories={CATEGORIES as unknown as Category[]}
+        articleCounts={articleCounts}
+      />
+    </div>
   </section>
 
   <!-- Featured Article -->
   {featuredArticle && (
-    <section class="container-main pb-8">
-      <h2 class="text-xl font-bold uppercase tracking-wider text-muted mb-4">Featured Article</h2>
+    <section class="container-main py-10">
       <FeaturedArticle article={featuredArticle} />
     </section>
   )}
 
   <!-- Trust Badges -->
-  <section class="container-main py-6">
+  <section class="container-main pb-6">
     <TrustBadges />
   </section>
 
   <!-- Category Sections -->
-  {CATEGORIES.map((cat) => {
-    const info = CATEGORY_MAP[cat];
-    const catArticles = getCategoryArticles(cat);
-    if (catArticles.length === 0) return null;
-    return (
-      <section class="container-main py-8">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl md:text-3xl">
-            {info.icon} {info.title}
-          </h2>
-          <a
-            href={`/categories/${cat}`}
-            class="text-sm text-primary-light no-underline hover:underline font-medium"
-          >
-            View all {articleCounts[cat]} articles &rarr;
-          </a>
-        </div>
-        <p class="text-muted mb-6 -mt-4">{info.description}</p>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {catArticles.map((article) => (
-            <ArticleCard article={article} />
-          ))}
-        </div>
-      </section>
-    );
-  })}
+  <div id="categories">
+    {CATEGORIES.map((cat) => {
+      const info = CATEGORY_MAP[cat];
+      const catArticles = getCategoryArticles(cat);
+      if (catArticles.length === 0) return null;
+      return (
+        <section class="border-t border-border">
+          <div class="container-main py-10">
+            <div class="flex items-baseline justify-between mb-5">
+              <div class="flex items-center gap-3">
+                <span class="text-xl md:text-2xl leading-none">{info.icon}</span>
+                <h2 class="text-xl md:text-2xl font-bold text-primary">{info.title}</h2>
+                <span class="text-sm text-muted font-normal">{articleCounts[cat]} articles</span>
+              </div>
+              <a
+                href={`/categories/${cat}`}
+                class="text-sm text-primary-light no-underline hover:underline font-medium flex-shrink-0"
+              >
+                View all &rarr;
+              </a>
+            </div>
+            <p class="text-muted text-sm md:text-base mb-6 max-w-2xl">{info.description}</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {catArticles.map((article) => (
+                <ArticleCard article={article} />
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    })}
+  </div>
 
   <!-- Above-footer ad -->
   <section class="container-main py-8">

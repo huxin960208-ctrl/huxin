@@ -2,67 +2,59 @@
 import { SITE, CATEGORY_MAP } from '../../types';
 ---
 
-<footer class="bg-primary text-white/80 mt-16">
+<footer class="bg-primary text-white/70 mt-16">
   <div class="container-main py-12">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
       <!-- Brand -->
-      <div>
-        <a href="/" class="text-white no-underline font-bold text-lg">
-          <span class="text-accent">⚖️</span> {SITE.name}
+      <div class="md:col-span-1">
+        <a href="/" class="text-white no-underline font-bold text-lg flex items-center gap-2">
+          <span class="text-accent text-xl leading-none">⚖</span>
+          <span>{SITE.name}</span>
         </a>
-        <p class="mt-3 text-sm text-white/60">{SITE.tagline}</p>
-        <p class="mt-2 text-xs text-white/50">
-          &copy; {new Date().getFullYear()} {SITE.name}. All rights reserved.
+        <p class="mt-3 text-sm text-white/50 leading-relaxed">{SITE.tagline}</p>
+        <p class="mt-4 text-xs text-white/40">
+          &copy; {new Date().getFullYear()} {SITE.name}
         </p>
       </div>
 
       <!-- Categories -->
-      <div>
-        <h3 class="text-white font-semibold mb-3 text-sm uppercase tracking-wider">Categories</h3>
-        <ul class="space-y-2">
+      <div class="md:col-span-1">
+        <h3 class="text-white text-xs font-semibold uppercase tracking-wider mb-4">Categories</h3>
+        <ul class="space-y-2.5">
           {Object.values(CATEGORY_MAP).map((cat) => (
             <li>
               <a
                 href={`/categories/${cat.slug}`}
-                class="text-white/60 hover:text-white text-sm no-underline transition-colors"
+                class="text-white/50 hover:text-white text-sm no-underline transition-colors"
               >
-                {cat.icon} {cat.title}
+                {cat.title}
               </a>
             </li>
           ))}
         </ul>
       </div>
 
-      <!-- Legal pages -->
-      <div>
-        <h3 class="text-white font-semibold mb-3 text-sm uppercase tracking-wider">Legal</h3>
-        <ul class="space-y-2">
-          <li>
-            <a href="/about" class="text-white/60 hover:text-white text-sm no-underline transition-colors">
-              About
-            </a>
-          </li>
-          <li>
-            <a href="/contact" class="text-white/60 hover:text-white text-sm no-underline transition-colors">
-              Contact
-            </a>
-          </li>
-          <li>
-            <a href="/privacy" class="text-white/60 hover:text-white text-sm no-underline transition-colors">
-              Privacy Policy
-            </a>
-          </li>
-          <li>
-            <a href="/disclaimer" class="text-white/60 hover:text-white text-sm no-underline transition-colors">
-              Disclaimer
-            </a>
-          </li>
+      <!-- Pages -->
+      <div class="md:col-span-1">
+        <h3 class="text-white text-xs font-semibold uppercase tracking-wider mb-4">Pages</h3>
+        <ul class="space-y-2.5">
+          <li><a href="/articles" class="text-white/50 hover:text-white text-sm no-underline transition-colors">All Articles</a></li>
+          <li><a href="/about" class="text-white/50 hover:text-white text-sm no-underline transition-colors">About</a></li>
+          <li><a href="/contact" class="text-white/50 hover:text-white text-sm no-underline transition-colors">Contact</a></li>
+        </ul>
+      </div>
+
+      <!-- Legal -->
+      <div class="md:col-span-1">
+        <h3 class="text-white text-xs font-semibold uppercase tracking-wider mb-4">Legal</h3>
+        <ul class="space-y-2.5">
+          <li><a href="/privacy" class="text-white/50 hover:text-white text-sm no-underline transition-colors">Privacy Policy</a></li>
+          <li><a href="/disclaimer" class="text-white/50 hover:text-white text-sm no-underline transition-colors">Disclaimer</a></li>
         </ul>
       </div>
     </div>
 
-    <!-- Disclaimer strip -->
-    <div class="mt-10 pt-6 border-t border-white/10 text-center text-xs text-white/40">
+    <div class="mt-10 pt-6 border-t border-white/10 text-center text-xs text-white/40 leading-relaxed">
       <p>
         <strong class="text-white/60">Disclaimer:</strong> This website provides general information for educational purposes only.
         It does not constitute legal advice, nor does it create an attorney-client relationship.

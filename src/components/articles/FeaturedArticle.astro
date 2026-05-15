@@ -1,6 +1,6 @@
 ---
 import { getArticleUrl, truncate } from '../../utils/urlUtils';
-import ArticleMeta from './ArticleMeta.astro';
+import { getCategoryTitle } from '../../utils/urlUtils';
 import type { CollectionEntry } from 'astro:content';
 
 export interface Props {
@@ -8,40 +8,45 @@ export interface Props {
 }
 
 const { article } = Astro.props;
-const { data, slug, body } = article;
+const { data, slug } = article;
 ---
 
-<div class="card border-primary/20 bg-gradient-to-br from-primary/5 to-surface">
-  <div class="flex flex-col md:flex-row gap-6 items-start">
+<div class="bg-white rounded-xl border border-border overflow-hidden hover:border-primary/20 hover:shadow-sm transition-all duration-200">
+  <div class="flex flex-col md:flex-row">
     {data.featuredImage && (
-      <a href={getArticleUrl(slug)} class="block flex-shrink-0 w-full md:w-64">
+      <a href={getArticleUrl(slug)} class="block flex-shrink-0 md:w-72">
         <img
           src={data.featuredImage}
           alt={data.featuredImageAlt ?? data.title}
-          class="w-full h-48 md:h-40 object-cover rounded-lg"
+          class="w-full h-44 md:h-full object-cover"
           loading="eager"
-          width="512"
-          height="256"
+          width="576"
+          height="320"
         />
       </a>
     )}
-    <div class="flex-1">
-      <span class="inline-block bg-accent text-white text-xs px-2 py-0.5 rounded-full font-semibold mb-2 uppercase tracking-wide">
-        Featured
-      </span>
-      <ArticleMeta
-        pubDate={data.pubDate}
-        category={data.category}
-        author={data.author}
-      >
-        {body.slice(0, 100)}
-      </ArticleMeta>
-      <h2 class="text-xl md:text-2xl mt-1 mb-2">
-        <a href={getArticleUrl(slug)} class="no-underline hover:text-primary-light transition-colors text-primary">
+    <div class="flex-1 p-6 md:p-8 flex flex-col justify-center">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="inline-block bg-accent/10 text-accent text-xs font-semibold px-2 py-0.5 rounded-full uppercase tracking-wide">
+          Featured
+        </span>
+        <span class="text-xs text-muted">
+          {getCategoryTitle(data.category)} &middot;{' '}
+          {data.pubDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+        </span>
+      </div>
+      <h2 class="text-xl md:text-2xl font-bold mt-1 mb-3">
+        <a href={getArticleUrl(slug)} class="no-underline text-primary hover:text-primary-light transition-colors">
           {data.title}
         </a>
       </h2>
-      <p class="text-muted">{truncate(data.description, 200)}</p>
+      <p class="text-muted text-sm md:text-base leading-relaxed">{truncate(data.description, 220)}</p>
+      <div class="mt-4">
+        <a href={getArticleUrl(slug)} class="inline-flex items-center gap-1 text-sm font-medium text-primary-light no-underline hover:underline">
+          Read article
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+      </div>
     </div>
   </div>
 </div>
