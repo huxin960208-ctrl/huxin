@@ -16,15 +16,11 @@ import { SITE } from '../../types';
 
 export async function getStaticPaths() {
   const articles = await getCollection('articles', ({ data }) => !data.draft);
-  return articles.map((article) => ({
-    params: { slug: article.slug },
-    props: { article },
-  }));
+  return articles.map(article => ({ params: { slug: article.slug }, props: { article } }));
 }
 
 const { article } = Astro.props;
 const { data, body, slug } = article as CollectionEntry<'articles'>;
-
 const articleContent = await article.render();
 const headingMatches = body.match(/^#{2,3}\s+.+$/gm) ?? [];
 const headings = headingMatches.map((h: string) => {
@@ -32,10 +28,8 @@ const headings = headingMatches.map((h: string) => {
   const text = h.replace(/^#{2,3}\s+/, '');
   return { depth, text };
 });
-
 const articleUrl = getArticleUrl(slug);
 const fullUrl = `${SITE.url}${articleUrl}`;
-
 const breadcrumbItems = [
   { name: 'Insights', url: '/articles' },
   { name: getCategoryTitle(data.category), url: getCategoryUrl(data.category) },
@@ -50,97 +44,49 @@ const breadcrumbItems = [
   ogType="article"
   ogImage={data.featuredImage ? `${SITE.url}${data.featuredImage}` : undefined}
 >
-  <ArticleSchema
-    title={data.title}
-    description={data.description}
-    url={articleUrl}
-    pubDate={data.pubDate}
-    updatedDate={data.updatedDate}
-    author={data.author}
-    featuredImage={data.featuredImage}
-    category={data.category}
-  />
+  <ArticleSchema title={data.title} description={data.description} url={articleUrl} pubDate={data.pubDate} updatedDate={data.updatedDate} author={data.author} featuredImage={data.featuredImage} category={data.category} />
   {data.faq && data.faq.length > 0 && <FAQSchema faqs={data.faq} />}
   <BreadcrumbSchema items={breadcrumbItems} />
 
-  <article class="py-10 md:py-14">
+  <article class="py-12 md:py-16">
     <div class="container-narrow">
-      <Breadcrumbs
-        items={[
-          { label: 'Insights', href: '/articles' },
-          { label: getCategoryTitle(data.category), href: getCategoryUrl(data.category) },
-          { label: data.title },
-        ]}
-      />
+      <Breadcrumbs items={[{ label: 'Insights', href: '/articles' }, { label: getCategoryTitle(data.category), href: getCategoryUrl(data.category) }, { label: data.title }]} />
 
-      <header class="mb-8">
-        <h1 class="text-2xl md:text-3xl lg:text-4xl leading-tight mb-4">{data.title}</h1>
+      <header class="mb-10">
+        <h1 class="text-3xl md:text-4xl lg:text-5xl leading-tight mb-4">{data.title}</h1>
         <ArticleMeta pubDate={data.pubDate} category={data.category} author={data.author} />
       </header>
 
-      {data.featuredImage && (
-        <img
-          src={data.featuredImage}
-          alt={data.featuredImageAlt ?? data.title}
-          class="w-full mb-10"
-          loading="eager"
-          width="800"
-          height="400"
-        />
-      )}
+      {data.featuredImage && <img src={data.featuredImage} alt={data.featuredImageAlt ?? data.title} class="w-full rounded-2xl mb-10 shadow-lg" loading="eager" width="800" height="400" />}
 
       <div class="flex gap-10">
         {headings.length > 3 && (
           <aside class="hidden lg:block w-56 flex-shrink-0">
-            <div class="sticky top-24">
-              <TableOfContents headings={headings} />
-            </div>
+            <TableOfContents headings={headings} />
           </aside>
         )}
-
         <div class="flex-1 min-w-0">
-          {headings.length > 3 && (
-            <div class="lg:hidden mb-8">
-              <TableOfContents headings={headings} />
-            </div>
-          )}
-
-          {data.keyTakeaways && data.keyTakeaways.length > 0 && (
-            <KeyTakeaways takeaways={data.keyTakeaways} />
-          )}
-
-          <div class="article-body">
-            <articleContent.Content />
-          </div>
-
+          {headings.length > 3 && <div class="lg:hidden mb-8"><TableOfContents headings={headings} /></div>}
+          {data.keyTakeaways && data.keyTakeaways.length > 0 && <KeyTakeaways takeaways={data.keyTakeaways} />}
+          <div class="article-body"><articleContent.Content /></div>
           <InArticleAd />
-
-          {data.faq && data.faq.length > 0 && (
-            <FAQSection faqs={data.faq} />
-          )}
-
+          {data.faq && data.faq.length > 0 && <FAQSection faqs={data.faq} />}
           {data.faq && data.faq.length > 0 && <InArticleAd />}
-
           <AuthorBio author={data.author} bio={data.authorBio} />
         </div>
       </div>
 
-      <!-- Related -->
-      <footer class="mt-14 pt-10 border-t border-border">
-        <h2 class="text-lg mb-6">More {getCategoryTitle(data.category)} Insights</h2>
+      <footer class="mt-16 pt-10 border-t border-slate-200">
+        <h2 class="text-2xl mb-8">More {getCategoryTitle(data.category)} Insights</h2>
         {
           (async () => {
-            const related = (await getCollection('articles', ({ data: d }) =>
-              !d.draft && d.category === data.category && d.title !== data.title
-            )).slice(0, 3);
+            const related = (await getCollection('articles', ({ data: d }) => !d.draft && d.category === data.category && d.title !== data.title)).slice(0, 3);
             return related.length > 0 ? (
               <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-                {related.map((rel) => (
-                  <article class="bg-cream/50 border border-border p-5">
-                    <a href={getArticleUrl(rel.slug)} class="no-underline">
-                      <h3 class="text-base mb-1 text-navy hover:text-gold transition-colors">{rel.data.title}</h3>
-                    </a>
-                    <p class="text-xs text-muted mb-0">{rel.data.description.slice(0, 100)}...</p>
+                {related.map(rel => (
+                  <article class="bg-slate-50 border border-slate-200 rounded-xl p-5 hover:border-slate-300 transition-colors">
+                    <a href={getArticleUrl(rel.slug)} class="no-underline"><h3 class="text-base font-bold text-slate-900 hover:text-accent-dark transition-colors mb-1">{rel.data.title}</h3></a>
+                    <p class="text-xs text-slate-500 mb-0">{rel.data.description.slice(0, 100)}...</p>
                   </article>
                 ))}
               </div>

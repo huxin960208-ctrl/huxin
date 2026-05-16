@@ -1,47 +1,15 @@
 ---
-export interface Props {
-  currentPage: number;
-  totalPages: number;
-  baseUrl: string;
-}
-
+export interface Props { currentPage: number; totalPages: number; baseUrl: string; }
 const { currentPage, totalPages, baseUrl } = Astro.props;
-
 if (totalPages <= 1) return;
 ---
 
-<nav class="flex items-center justify-center gap-2 mt-12 pt-8 border-t border-border" aria-label="Pagination">
-  {currentPage > 1 && (
-    <a
-      href={currentPage === 2 ? baseUrl : `${baseUrl}/page/${currentPage - 1}`}
-      class="px-4 py-2 text-xs uppercase tracking-wider border border-border text-navy/60 no-underline hover:text-navy hover:border-navy/30 transition-colors font-label"
-    >
-      Previous
-    </a>
-  )}
-  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+<nav class="flex items-center justify-center gap-2 mt-14 pt-8 border-t border-slate-200" aria-label="Pagination">
+  {currentPage > 1 && <a href={currentPage === 2 ? baseUrl : `${baseUrl}/page/${currentPage - 1}`} class="px-4 py-2 text-sm font-medium bg-slate-100 text-slate-600 rounded-xl no-underline hover:bg-slate-200 transition-colors">Previous</a>}
+  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => {
     const href = page === 1 ? baseUrl : `${baseUrl}/page/${page}`;
     const isCurrent = page === currentPage;
-    return (
-      <a
-        href={href}
-        class={`px-4 py-2 text-xs font-label no-underline transition-colors ${
-          isCurrent
-            ? 'bg-navy text-white'
-            : 'border border-border text-navy/60 hover:text-navy hover:border-navy/30'
-        }`}
-        aria-current={isCurrent ? 'page' : undefined}
-      >
-        {page}
-      </a>
-    );
+    return <a href={href} class={`px-4 py-2 text-sm font-medium rounded-xl no-underline transition-colors ${isCurrent ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`} aria-current={isCurrent ? 'page' : undefined}>{page}</a>;
   })}
-  {currentPage < totalPages && (
-    <a
-      href={`${baseUrl}/page/${currentPage + 1}`}
-      class="px-4 py-2 text-xs uppercase tracking-wider border border-border text-navy/60 no-underline hover:text-navy hover:border-navy/30 transition-colors font-label"
-    >
-      Next
-    </a>
-  )}
+  {currentPage < totalPages && <a href={`${baseUrl}/page/${currentPage + 1}`} class="px-4 py-2 text-sm font-medium bg-slate-100 text-slate-600 rounded-xl no-underline hover:bg-slate-200 transition-colors">Next</a>}
 </nav>

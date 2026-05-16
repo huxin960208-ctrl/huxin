@@ -1,33 +1,17 @@
 ---
 import { slugify } from '../../utils/urlUtils';
-
-export interface Props {
-  headings: { depth: number; text: string }[];
-}
-
+export interface Props { headings: { depth: number; text: string }[]; }
 const { headings } = Astro.props;
-
-const filtered = headings
-  .filter((h) => h.depth >= 2 && h.depth <= 3)
-  .map((h) => ({
-    ...h,
-    id: slugify(h.text),
-    indent: h.depth === 3,
-  }));
+const filtered = headings.filter(h => h.depth >= 2 && h.depth <= 3).map(h => ({ ...h, id: slugify(h.text), indent: h.depth === 3 }));
 ---
 
 {filtered.length > 0 && (
-  <nav class="bg-cream/50 border border-border p-5 mb-8" aria-label="Table of Contents">
-    <h2 class="font-label text-xs uppercase tracking-wider text-muted mb-3 mt-0">In This Article</h2>
-    <ol class="space-y-1.5">
-      {filtered.map((h) => (
-        <li class={h.indent ? 'ml-4' : ''}>
-          <a
-            href={`#${h.id}`}
-            class="text-sm no-underline text-navy/60 hover:text-gold transition-colors"
-          >
-            {h.text}
-          </a>
+  <nav class="bg-slate-50 border border-slate-200 rounded-xl p-5 sticky top-24" aria-label="Table of Contents">
+    <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3 mt-0">In This Article</h2>
+    <ol class="space-y-1">
+      {filtered.map(h => (
+        <li class={h.indent ? 'ml-3' : ''}>
+          <a href={`#${h.id}`} class="text-sm no-underline text-slate-500 hover:text-accent-dark transition-colors leading-relaxed">{h.text}</a>
         </li>
       ))}
     </ol>

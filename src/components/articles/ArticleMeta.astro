@@ -2,25 +2,12 @@
 import { getCategoryTitle } from '../../utils/urlUtils';
 import type { Category } from '../../types';
 
-export interface Props {
-  pubDate: Date;
-  category: Category;
-  author?: string;
-}
-
+export interface Props { pubDate: Date; category: Category; author?: string; }
 const { pubDate, category, author } = Astro.props;
 ---
 
-<div class="flex items-center gap-3 text-xs text-muted font-label">
-  <span class="text-gold uppercase tracking-wider">{getCategoryTitle(category)}</span>
-  <span aria-hidden="true">/</span>
-  <time datetime={pubDate.toISOString()}>
-    {pubDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-  </time>
-  {author && (
-    <>
-      <span aria-hidden="true">/</span>
-      <span>{author}</span>
-    </>
-  )}
+<div class="flex items-center gap-3 text-sm text-slate-500 mb-4">
+  <span class="font-semibold text-accent-dark bg-accent/10 px-2.5 py-0.5 rounded-full text-xs">{getCategoryTitle(category)}</span>
+  <time datetime={pubDate.toISOString()}>{pubDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</time>
+  {author && <><span>&middot;</span><span>{author}</span></>}
 </div>

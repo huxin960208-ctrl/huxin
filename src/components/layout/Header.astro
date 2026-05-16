@@ -3,72 +3,59 @@ import { SITE, CATEGORY_MAP } from '../../types';
 
 const currentPath = Astro.url.pathname;
 
-function isActive(path: string, exact = false) {
-  return exact ? currentPath === path : currentPath.startsWith(path);
+function linkClass(path: string, exact = false) {
+  const active = exact ? currentPath === path : currentPath.startsWith(path);
+  const base = 'text-sm font-medium no-underline transition-colors duration-200 py-2';
+  if (active) return `${base} text-slate-900`;
+  return `${base} text-slate-500 hover:text-slate-900`;
 }
 ---
 
-<header class="bg-white border-b border-border sticky top-0 z-50">
+<header class="sticky top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-slate-200/60">
   <div class="container-wide">
     <nav class="flex items-center justify-between h-16" aria-label="Main navigation">
-      <a
-        href="/"
-        class="no-underline text-navy hover:text-gold transition-colors"
-      >
-        <span class="font-heading text-lg md:text-xl font-bold tracking-tight">{SITE.name}</span>
+      <a href="/" class="no-underline text-slate-900 hover:text-accent-dark transition-colors">
+        <span class="font-display text-xl md:text-2xl font-bold tracking-tight">{SITE.name}</span>
       </a>
 
-      <div class="hidden md:flex items-center gap-6">
-        <a href="/" class={isActive('/', true) ? 'nav-link nav-link-active' : 'nav-link'}>Home</a>
+      <div class="hidden md:flex items-center gap-1">
+        <a href="/" class={linkClass('/', true) + ' px-3'}>Home</a>
 
         <div class="relative group">
-          <button class="nav-link flex items-center gap-0.5 cursor-pointer" aria-haspopup="true">
+          <button class={linkClass('/categories') + ' px-3 inline-flex items-center gap-1 cursor-pointer'}>
             Practice Areas
-            <svg class="w-3 h-3 opacity-40" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-              <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-            </svg>
+            <svg class="w-3 h-3 opacity-40" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"/></svg>
           </button>
-          <div class="absolute top-full left-0 mt-2 bg-white border border-border shadow-sm py-3 w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+          <div class="absolute top-full left-0 mt-2 bg-white/95 backdrop-blur-xl border border-slate-200/60 rounded-xl shadow-xl shadow-slate-900/5 py-3 w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
             {Object.values(CATEGORY_MAP).map((cat) => (
-              <a
-                href={`/categories/${cat.slug}`}
-                class="block px-5 py-2.5 text-sm text-navy/70 no-underline hover:text-gold hover:bg-cream/50 transition-colors"
-              >
+              <a href={`/categories/${cat.slug}`} class="block px-5 py-2.5 text-sm text-slate-600 no-underline hover:text-accent-dark hover:bg-slate-50 transition-colors">
                 {cat.title}
               </a>
             ))}
           </div>
         </div>
 
-        <a href="/articles" class={isActive('/articles') ? 'nav-link nav-link-active' : 'nav-link'}>Insights</a>
-        <a href="/about" class={isActive('/about', true) ? 'nav-link nav-link-active' : 'nav-link'}>About</a>
-        <a href="/contact" class={isActive('/contact', true) ? 'nav-link nav-link-active' : 'nav-link'}>Contact</a>
+        <a href="/articles" class={linkClass('/articles') + ' px-3'}>Insights</a>
+        <a href="/about" class={linkClass('/about', true) + ' px-3'}>About</a>
+        <a href="/contact" class={linkClass('/contact', true) + ' px-3'}>Contact</a>
       </div>
 
-      <button
-        class="md:hidden text-navy p-1"
-        aria-label="Menu"
-        aria-expanded="false"
-        onclick="document.getElementById('mobile-menu')?.classList.toggle('hidden')"
-      >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-        </svg>
+      <button class="md:hidden text-slate-700 p-1" aria-label="Menu" onclick="document.getElementById('mobile-menu')?.classList.toggle('hidden')">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
       </button>
     </nav>
   </div>
 
-  <!-- Mobile menu -->
-  <div id="mobile-menu" class="hidden md:hidden border-t border-border bg-white">
-    <div class="container-wide py-3 space-y-1">
-      <a href="/" class="block px-3 py-2 text-sm text-navy/70 no-underline hover:text-gold">Home</a>
-      <span class="block px-3 py-1 text-xs text-muted uppercase tracking-wider">Practice Areas</span>
+  <div id="mobile-menu" class="hidden md:hidden border-t border-slate-100 bg-white">
+    <div class="container-wide py-4 space-y-1">
+      <a href="/" class="block px-3 py-2.5 text-sm font-medium text-slate-900 no-underline">Home</a>
+      <span class="block px-3 py-1 text-xs text-slate-400 uppercase tracking-wider font-semibold">Practice Areas</span>
       {Object.values(CATEGORY_MAP).map((cat) => (
-        <a href={`/categories/${cat.slug}`} class="block px-6 py-2 text-sm text-navy/70 no-underline hover:text-gold">{cat.title}</a>
+        <a href={`/categories/${cat.slug}`} class="block px-6 py-2.5 text-sm text-slate-600 no-underline">{cat.title}</a>
       ))}
-      <a href="/articles" class="block px-3 py-2 text-sm text-navy/70 no-underline hover:text-gold">Insights</a>
-      <a href="/about" class="block px-3 py-2 text-sm text-navy/70 no-underline hover:text-gold">About</a>
-      <a href="/contact" class="block px-3 py-2 text-sm text-navy/70 no-underline hover:text-gold">Contact</a>
+      <a href="/articles" class="block px-3 py-2.5 text-sm font-medium text-slate-900 no-underline">Insights</a>
+      <a href="/about" class="block px-3 py-2.5 text-sm font-medium text-slate-900 no-underline">About</a>
+      <a href="/contact" class="block px-3 py-2.5 text-sm font-medium text-slate-900 no-underline">Contact</a>
     </div>
   </div>
 </header>
