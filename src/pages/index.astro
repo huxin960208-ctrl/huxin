@@ -1,28 +1,17 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../components/layout/BaseLayout.astro';
-import CategoryNav from '../components/navigation/CategoryNav.astro';
 import ArticleCard from '../components/articles/ArticleCard.astro';
 import FeaturedArticle from '../components/articles/FeaturedArticle.astro';
-import TrustBadges from '../components/ui/TrustBadges.astro';
-import AdUnit from '../components/ads/AdUnit.astro';
-import CategoryIcon from '../components/ui/CategoryIcon.astro';
 import { CATEGORIES, CATEGORY_MAP, SITE, type Category } from '../types';
 
 const articles = await getCollection('articles', ({ data }) => !data.draft);
 const sortedArticles = articles.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
-
 const featuredArticle = sortedArticles.find((a) => a.data.isFeatured) ?? sortedArticles[0];
 
-function getCategoryArticles(cat: Category) {
-  return sortedArticles
-    .filter((a) => a.data.category === cat)
-    .slice(0, 3);
+function getLatest(cat: Category) {
+  return sortedArticles.filter((a) => a.data.category === cat).slice(0, 2);
 }
-
-const articleCounts = Object.fromEntries(
-  CATEGORIES.map((cat) => [cat, sortedArticles.filter((a) => a.data.category === cat).length])
-) as Record<Category, number>;
 ---
 
 <BaseLayout
@@ -31,85 +20,92 @@ const articleCounts = Object.fromEntries(
   canonicalURL={SITE.url}
 >
 
-  <!-- Hero Section -->
-  <section class="bg-gradient-to-b from-primary to-primary-light text-white py-16 md:py-24">
-    <div class="container-main text-center">
-      <h1 class="text-white text-3xl md:text-5xl lg:text-6xl font-bold leading-tight max-w-3xl mx-auto">
-        {SITE.tagline}
-      </h1>
-      <p class="text-white/60 text-base md:text-lg mt-4 max-w-xl mx-auto leading-relaxed">
-        Free, in-depth guides on car accidents, slip and fall, medical malpractice,
-        workplace injuries, and wrongful death claims.
-      </p>
-      <div class="mt-8 flex flex-wrap justify-center gap-3">
-        <a href="/articles" class="inline-block bg-accent hover:bg-accent-light text-white font-semibold px-6 py-3 rounded-lg transition-colors no-underline text-sm md:text-base">
-          Browse All Articles
-        </a>
-        <a href="#categories" class="inline-block bg-white/10 hover:bg-white/20 text-white font-semibold px-6 py-3 rounded-lg transition-colors no-underline text-sm md:text-base">
-          Explore by Category
-        </a>
+  <!-- Hero -->
+  <section class="bg-cream border-b border-border">
+    <div class="container-wide py-20 md:py-28">
+      <div class="max-w-3xl">
+        <div class="decorative-line mb-6"></div>
+        <h1 class="text-3xl md:text-4xl lg:text-5xl text-navy leading-tight mb-5">
+          {SITE.tagline}
+        </h1>
+        <p class="text-base md:text-lg text-muted leading-relaxed max-w-xl mb-8">
+          Free, in-depth guides on car accidents, slip and fall, medical malpractice,
+          workplace injuries, and wrongful death claims.
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <a href="/articles" class="inline-block bg-navy text-white font-label text-sm uppercase tracking-wider px-6 py-3 no-underline hover:bg-navy-light transition-colors">
+            View All Insights
+          </a>
+          <a href="#practices" class="inline-block bg-white text-navy border border-border font-label text-sm uppercase tracking-wider px-6 py-3 no-underline hover:border-navy/30 transition-colors">
+            Practice Areas
+          </a>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Category Nav -->
-  <section class="bg-white border-b border-border sticky top-16 z-40">
-    <div class="container-main py-3">
-      <CategoryNav
-        categories={CATEGORIES as unknown as Category[]}
-        articleCounts={articleCounts}
-      />
+  <!-- Practice Areas -->
+  <section id="practices" class="container-wide py-16 md:py-20">
+    <div class="section-label">Practice Areas</div>
+    <h2 class="text-2xl md:text-3xl text-navy mb-10">How We Can Help</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border">
+      {CATEGORIES.map((cat) => {
+        const info = CATEGORY_MAP[cat];
+        const count = sortedArticles.filter((a) => a.data.category === cat).length;
+        return (
+          <a
+            href={`/categories/${cat}`}
+            class="group bg-white p-8 md:p-10 no-underline hover:bg-cream/50 transition-colors"
+          >
+            <div class="decorative-line mb-5 group-hover:w-16 transition-all duration-300"></div>
+            <h3 class="text-lg md:text-xl text-navy mb-2 group-hover:text-gold transition-colors">{info.title}</h3>
+            <p class="text-sm text-muted leading-relaxed mb-0">{info.description}</p>
+            <span class="inline-block mt-4 text-xs uppercase tracking-wider text-muted group-hover:text-navy transition-colors font-label">
+              {count} {count === 1 ? 'Article' : 'Articles'}
+            </span>
+          </a>
+        );
+      })}
     </div>
   </section>
 
-  <!-- Featured Article -->
+  <!-- Featured Insight -->
   {featuredArticle && (
-    <section class="container-main py-10">
-      <FeaturedArticle article={featuredArticle} />
+    <section class="bg-cream border-y border-border">
+      <div class="container-wide py-16 md:py-20">
+        <div class="section-label">Featured Insight</div>
+        <FeaturedArticle article={featuredArticle} />
+      </div>
     </section>
   )}
 
-  <!-- Trust Badges -->
-  <section class="container-main pb-6">
-    <TrustBadges />
-  </section>
-
-  <!-- Category Sections -->
-  <div id="categories">
-    {CATEGORIES.map((cat) => {
+  <!-- Latest per Practice Area -->
+  <div class="container-wide py-16 md:py-20">
+    {CATEGORIES.map((cat, i) => {
       const info = CATEGORY_MAP[cat];
-      const catArticles = getCategoryArticles(cat);
-      if (catArticles.length === 0) return null;
+      const latest = getLatest(cat);
+      if (latest.length === 0) return null;
       return (
-        <section class="border-t border-border">
-          <div class="container-main py-10">
-            <div class="flex items-baseline justify-between mb-5">
-              <div class="flex items-center gap-3">
-                <CategoryIcon category={cat} />
-                <h2 class="text-xl md:text-2xl font-bold text-primary">{info.title}</h2>
-                <span class="text-sm text-muted font-normal">{articleCounts[cat]} articles</span>
-              </div>
-              <a
-                href={`/categories/${cat}`}
-                class="text-sm text-primary-light no-underline hover:underline font-medium flex-shrink-0"
-              >
-                View all &rarr;
-              </a>
+        <section class={i > 0 ? 'mt-16 pt-16 border-t border-border' : ''}>
+          <div class="flex items-baseline justify-between mb-8">
+            <div>
+              <h2 class="text-xl md:text-2xl text-navy mb-1">{info.title}</h2>
+              <p class="text-sm text-muted mb-0">{info.description}</p>
             </div>
-            <p class="text-muted text-sm md:text-base mb-6 max-w-2xl">{info.description}</p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {catArticles.map((article) => (
-                <ArticleCard article={article} />
-              ))}
-            </div>
+            <a
+              href={`/categories/${cat}`}
+              class="font-label text-xs uppercase tracking-wider text-navy/60 no-underline hover:text-gold transition-colors flex-shrink-0"
+            >
+              View All &rarr;
+            </a>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {latest.map((article) => (
+              <ArticleCard article={article} />
+            ))}
           </div>
         </section>
       );
     })}
   </div>
-
-  <!-- Above-footer ad -->
-  <section class="container-main py-8">
-    <AdUnit slot="footer" />
-  </section>
 </BaseLayout>

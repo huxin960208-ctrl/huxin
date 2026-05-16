@@ -3,41 +3,42 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../components/layout/BaseLayout.astro';
 import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
 import Pagination from '../../components/navigation/Pagination.astro';
-import ArticleGrid from '../../components/articles/ArticleGrid.astro';
+import ArticleCard from '../../components/articles/ArticleCard.astro';
 import { SITE } from '../../types';
 
 const ARTICLES_PER_PAGE = 9;
 const allArticles = await getCollection('articles', ({ data }) => !data.draft);
-const sortedArticles = allArticles.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
-
-// Pagination
-const totalPages = Math.ceil(sortedArticles.length / ARTICLES_PER_PAGE);
-const currentPage = 1;
-const pageArticles = sortedArticles.slice(0, ARTICLES_PER_PAGE);
+const sorted = allArticles.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+const totalPages = Math.ceil(sorted.length / ARTICLES_PER_PAGE);
+const pageArticles = sorted.slice(0, ARTICLES_PER_PAGE);
 ---
 
 <BaseLayout
-  title="All Personal Injury Articles"
+  title="All Insights"
   description="Browse our complete library of personal injury guides, covering car accidents, slip and fall, medical malpractice, workplace injuries, and wrongful death."
   canonicalURL={`${SITE.url}/articles`}
 >
-  <div class="container-main py-8 md:py-12">
-    <Breadcrumbs items={[{ label: 'All Articles' }]} />
+  <div class="container-narrow py-10 md:py-14">
+    <Breadcrumbs items={[{ label: 'Insights' }]} />
 
-    <h1 class="text-3xl md:text-4xl mb-2">All Articles</h1>
-    <p class="text-muted mb-8 max-w-2xl">
-      Browse our complete library of personal injury guides and resources. Each article is
-      thoroughly researched and regularly updated to provide accurate, helpful information.
+    <h1 class="text-2xl md:text-3xl mb-2">All Insights</h1>
+    <p class="text-muted mb-10 max-w-xl">
+      Browse our complete library of personal injury guides. Each article is
+      thoroughly researched and regularly updated.
     </p>
 
     {pageArticles.length > 0 ? (
       <>
-        <ArticleGrid articles={pageArticles} />
-        <Pagination currentPage={currentPage} totalPages={totalPages} baseUrl="/articles" />
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {pageArticles.map((article) => (
+            <ArticleCard article={article} />
+          ))}
+        </div>
+        <Pagination currentPage={1} totalPages={totalPages} baseUrl="/articles" />
       </>
     ) : (
       <div class="text-center py-16">
-        <h2 class="text-xl text-muted">No articles yet</h2>
+        <h2 class="text-xl text-muted font-heading">No articles yet</h2>
         <p class="text-muted mt-2">Check back soon for new content.</p>
       </div>
     )}

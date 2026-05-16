@@ -7,7 +7,7 @@ export interface Props {
 
 const { headings } = Astro.props;
 
-const filteredHeadings = headings
+const filtered = headings
   .filter((h) => h.depth >= 2 && h.depth <= 3)
   .map((h) => ({
     ...h,
@@ -16,17 +16,17 @@ const filteredHeadings = headings
   }));
 ---
 
-{filteredHeadings.length > 0 && (
-  <nav class="bg-white border border-border rounded-lg p-4 mb-8" aria-label="Table of Contents">
-    <h2 class="text-sm font-bold uppercase tracking-wider text-muted mb-3">Table of Contents</h2>
+{filtered.length > 0 && (
+  <nav class="bg-cream/50 border border-border p-5 mb-8" aria-label="Table of Contents">
+    <h2 class="font-label text-xs uppercase tracking-wider text-muted mb-3 mt-0">In This Article</h2>
     <ol class="space-y-1.5">
-      {filteredHeadings.map((heading) => (
-        <li class={heading.indent ? 'ml-4' : ''}>
+      {filtered.map((h) => (
+        <li class={h.indent ? 'ml-4' : ''}>
           <a
-            href={`#${heading.id}`}
-            class="text-sm no-underline hover:text-primary-light text-muted transition-colors"
+            href={`#${h.id}`}
+            class="text-sm no-underline text-navy/60 hover:text-gold transition-colors"
           >
-            {heading.text}
+            {h.text}
           </a>
         </li>
       ))}

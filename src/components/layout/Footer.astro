@@ -2,36 +2,24 @@
 import { SITE, CATEGORY_MAP } from '../../types';
 ---
 
-<footer class="bg-primary text-white/70 mt-16">
-  <div class="container-main py-12">
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-      <!-- Brand -->
-      <div class="md:col-span-1">
-        <a href="/" class="text-white no-underline font-bold text-lg flex items-center gap-2">
-          <svg class="text-accent flex-shrink-0" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-  <circle cx="12" cy="12" r="10"/>
-  <line x1="12" y1="6" x2="12" y2="12"/>
-  <line x1="12" y1="16" x2="12.01" y2="16"/>
-  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-</svg>
-          <span>{SITE.name}</span>
+<footer class="bg-navy text-white/60 mt-20">
+  <div class="container-wide py-16">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-10">
+      <div class="md:col-span-4">
+        <a href="/" class="no-underline">
+          <span class="font-heading text-white text-xl font-bold tracking-tight">{SITE.name}</span>
         </a>
-        <p class="mt-3 text-sm text-white/50 leading-relaxed">{SITE.tagline}</p>
-        <p class="mt-4 text-xs text-white/40">
-          &copy; {new Date().getFullYear()} {SITE.name}
+        <p class="mt-4 text-sm text-white/40 leading-relaxed max-w-sm">
+          {SITE.tagline}. Free, in-depth guides on personal injury law for accident victims and their families.
         </p>
       </div>
 
-      <!-- Categories -->
-      <div class="md:col-span-1">
-        <h3 class="text-white text-xs font-semibold uppercase tracking-wider mb-4">Categories</h3>
-        <ul class="space-y-2.5">
+      <div class="md:col-span-2">
+        <h3 class="text-white text-xs uppercase tracking-[0.2em] mb-5 font-label">Practice Areas</h3>
+        <ul class="space-y-3">
           {Object.values(CATEGORY_MAP).map((cat) => (
             <li>
-              <a
-                href={`/categories/${cat.slug}`}
-                class="text-white/50 hover:text-white text-sm no-underline transition-colors"
-              >
+              <a href={`/categories/${cat.slug}`} class="text-white/50 hover:text-gold text-sm no-underline transition-colors">
                 {cat.title}
               </a>
             </li>
@@ -39,32 +27,32 @@ import { SITE, CATEGORY_MAP } from '../../types';
         </ul>
       </div>
 
-      <!-- Pages -->
-      <div class="md:col-span-1">
-        <h3 class="text-white text-xs font-semibold uppercase tracking-wider mb-4">Pages</h3>
-        <ul class="space-y-2.5">
-          <li><a href="/articles" class="text-white/50 hover:text-white text-sm no-underline transition-colors">All Articles</a></li>
-          <li><a href="/about" class="text-white/50 hover:text-white text-sm no-underline transition-colors">About</a></li>
-          <li><a href="/contact" class="text-white/50 hover:text-white text-sm no-underline transition-colors">Contact</a></li>
+      <div class="md:col-span-2">
+        <h3 class="text-white text-xs uppercase tracking-[0.2em] mb-5 font-label">Resources</h3>
+        <ul class="space-y-3">
+          <li><a href="/articles" class="text-white/50 hover:text-gold text-sm no-underline transition-colors">All Insights</a></li>
+          <li><a href="/categories" class="text-white/50 hover:text-gold text-sm no-underline transition-colors">Categories</a></li>
+          <li><a href="/about" class="text-white/50 hover:text-gold text-sm no-underline transition-colors">About Us</a></li>
+          <li><a href="/contact" class="text-white/50 hover:text-gold text-sm no-underline transition-colors">Contact</a></li>
         </ul>
       </div>
 
-      <!-- Legal -->
-      <div class="md:col-span-1">
-        <h3 class="text-white text-xs font-semibold uppercase tracking-wider mb-4">Legal</h3>
-        <ul class="space-y-2.5">
-          <li><a href="/privacy" class="text-white/50 hover:text-white text-sm no-underline transition-colors">Privacy Policy</a></li>
-          <li><a href="/disclaimer" class="text-white/50 hover:text-white text-sm no-underline transition-colors">Disclaimer</a></li>
+      <div class="md:col-span-2">
+        <h3 class="text-white text-xs uppercase tracking-[0.2em] mb-5 font-label">Legal</h3>
+        <ul class="space-y-3">
+          <li><a href="/privacy" class="text-white/50 hover:text-gold text-sm no-underline transition-colors">Privacy Policy</a></li>
+          <li><a href="/disclaimer" class="text-white/50 hover:text-gold text-sm no-underline transition-colors">Disclaimer</a></li>
         </ul>
       </div>
     </div>
 
-    <div class="mt-10 pt-6 border-t border-white/10 text-center text-xs text-white/40 leading-relaxed">
-      <p>
-        <strong class="text-white/60">Disclaimer:</strong> This website provides general information for educational purposes only.
-        It does not constitute legal advice, nor does it create an attorney-client relationship.
-        If you need legal assistance, please consult with a qualified personal injury attorney licensed in your state.
-        This website may contain advertisements and may earn revenue from advertising.
+    <div class="mt-14 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="text-xs text-white/30 mb-0">
+        &copy; {new Date().getFullYear()} {SITE.name}. All rights reserved.
+      </p>
+      <p class="text-xs text-white/30 mb-0 max-w-lg text-center md:text-right leading-relaxed">
+        This website provides general information for educational purposes only and does not constitute legal advice.
+        No attorney-client relationship is created by using this site.
       </p>
     </div>
   </div>

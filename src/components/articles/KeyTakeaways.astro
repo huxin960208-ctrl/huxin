@@ -4,20 +4,17 @@ export interface Props {
 }
 
 const { takeaways } = Astro.props;
-
 const show = takeaways && takeaways.length > 0;
 ---
 
 {show && (
-  <div class="bg-primary/5 border-l-4 border-accent rounded-r-lg p-5 my-8">
-    <h3 class="text-sm font-bold uppercase tracking-wider text-primary mb-3">Key Takeaways</h3>
+  <div class="bg-cream border-l-2 border-gold p-5 my-8">
+    <h3 class="font-label text-xs uppercase tracking-wider text-gold mb-3 mt-0">Key Takeaways</h3>
     <ul class="space-y-2 mb-0">
       {takeaways.map((point) => (
-        <li class="flex items-start gap-2 text-sm md:text-base">
-          <svg class="w-5 h-5 text-accent flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-          </svg>
-          {point}
+        <li class="flex items-start gap-2 text-sm">
+          <span class="text-gold mt-0.5 flex-shrink-0">&mdash;</span>
+          <span class="text-navy/80">{point}</span>
         </li>
       ))}
     </ul>

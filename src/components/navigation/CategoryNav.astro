@@ -1,18 +1,16 @@
 ---
 import { CATEGORY_MAP, type Category } from '../../types';
-import CategoryIcon from '../ui/CategoryIcon.astro';
 
 export interface Props {
   categories: Category[];
   selected?: Category;
-  articleCounts?: Record<Category, number>;
 }
 
 const { categories, selected } = Astro.props;
 ---
 
 <nav aria-label="Category navigation" class="overflow-x-auto">
-  <ul class="flex gap-1.5 whitespace-nowrap">
+  <ul class="flex gap-1 whitespace-nowrap">
     {categories.map((cat) => {
       const info = CATEGORY_MAP[cat];
       const isActive = cat === selected;
@@ -20,14 +18,13 @@ const { categories, selected } = Astro.props;
         <li>
           <a
             href={`/categories/${cat}`}
-            class={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs md:text-sm font-medium no-underline transition-colors ${
+            class={`inline-block px-4 py-2 text-xs uppercase tracking-wider no-underline transition-colors font-label ${
               isActive
-                ? 'bg-primary text-white'
-                : 'bg-gray-100 text-primary hover:bg-gray-200'
+                ? 'bg-navy text-white'
+                : 'text-navy/60 hover:text-navy border border-border hover:border-navy/30'
             }`}
           >
-            <CategoryIcon category={cat} size="sm" />
-            <span>{info.title}</span>
+            {info.title}
           </a>
         </li>
       );

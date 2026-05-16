@@ -4,9 +4,7 @@ import BaseLayout from '../../components/layout/BaseLayout.astro';
 import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
 import Pagination from '../../components/navigation/Pagination.astro';
 import CategoryNav from '../../components/navigation/CategoryNav.astro';
-import CategoryIcon from '../../components/ui/CategoryIcon.astro';
-import ArticleGrid from '../../components/articles/ArticleGrid.astro';
-import SidebarAd from '../../components/ads/SidebarAd.astro';
+import ArticleCard from '../../components/articles/ArticleCard.astro';
 import { CATEGORIES, CATEGORY_MAP, SITE, type Category } from '../../types';
 
 export async function getStaticPaths() {
@@ -23,63 +21,39 @@ if (!CATEGORIES.includes(category as Category)) {
 const cat = category as Category;
 const info = CATEGORY_MAP[cat];
 
-const allArticles = await getCollection(
-  'articles',
-  ({ data }) => !data.draft && data.category === cat
-);
-const sortedArticles = allArticles.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
-
-const totalPages = Math.ceil(sortedArticles.length / ARTICLES_PER_PAGE);
-const pageArticles = sortedArticles.slice(0, ARTICLES_PER_PAGE);
+const all = await getCollection('articles', ({ data }) => !data.draft && data.category === cat);
+const sorted = all.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+const totalPages = Math.ceil(sorted.length / ARTICLES_PER_PAGE);
+const pageArticles = sorted.slice(0, ARTICLES_PER_PAGE);
 ---
 
 <BaseLayout
-  title={`${info.title} Guides & Resources`}
+  title={`${info.title} — Insights & Resources`}
   description={info.description}
   canonicalURL={`${SITE.url}/categories/${cat}`}
 >
-  <div class="container-main py-8 md:py-12">
-    <Breadcrumbs
-      items={[
-        { label: 'Categories', href: '/categories' },
-        { label: info.title },
-      ]}
-    />
+  <div class="container-narrow py-10 md:py-14">
+    <Breadcrumbs items={[{ label: 'Categories', href: '/categories' }, { label: info.title }]} />
 
-    <div class="flex gap-8">
-      <div class="flex-1">
-        <div class="flex items-center gap-3 mb-2">
-          <CategoryIcon category={cat} />
-          <h1 class="text-3xl md:text-4xl mb-0">{info.title}</h1>
+    <h1 class="text-2xl md:text-3xl mb-2">{info.title}</h1>
+    <p class="text-muted mb-6 max-w-xl">{info.description}</p>
+
+    <CategoryNav categories={CATEGORIES as unknown as Category[]} selected={cat} />
+
+    {pageArticles.length > 0 ? (
+      <div class="mt-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {pageArticles.map((article) => (
+            <ArticleCard article={article} />
+          ))}
         </div>
-        <p class="text-muted mb-6 max-w-2xl">{info.description}</p>
-
-        <CategoryNav
-          categories={CATEGORIES as unknown as Category[]}
-          selected={cat}
-        />
-
-        {pageArticles.length > 0 ? (
-          <div class="mt-8">
-            <ArticleGrid articles={pageArticles} />
-            <Pagination
-              currentPage={1}
-              totalPages={totalPages}
-              baseUrl={`/categories/${cat}`}
-            />
-          </div>
-        ) : (
-          <div class="text-center py-16 mt-8">
-            <h2 class="text-xl text-muted">No articles in this category yet</h2>
-            <p class="text-muted mt-2">Check back soon or browse other categories above.</p>
-          </div>
-        )}
+        <Pagination currentPage={1} totalPages={totalPages} baseUrl={`/categories/${cat}`} />
       </div>
-
-      <!-- Sidebar -->
-      <div class="hidden lg:block w-80 flex-shrink-0">
-        <SidebarAd />
+    ) : (
+      <div class="text-center py-16 mt-8">
+        <h2 class="text-xl text-muted font-heading">No articles yet</h2>
+        <p class="text-muted mt-2">Check back soon or browse other categories.</p>
       </div>
-    </div>
+    )}
   </div>
 </BaseLayout>

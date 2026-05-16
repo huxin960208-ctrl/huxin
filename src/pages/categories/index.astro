@@ -2,43 +2,43 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../components/layout/BaseLayout.astro';
 import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
-import CategoryIcon from '../../components/ui/CategoryIcon.astro';
 import { CATEGORIES, CATEGORY_MAP, SITE, type Category } from '../../types';
 
 const articles = await getCollection('articles', ({ data }) => !data.draft);
-const articleCounts = Object.fromEntries(
+const counts = Object.fromEntries(
   CATEGORIES.map((cat) => [cat, articles.filter((a) => a.data.category === cat).length])
 ) as Record<Category, number>;
 ---
 
 <BaseLayout
-  title="Personal Injury Categories"
-  description="Browse our personal injury guides by category: car accidents, slip and fall, medical malpractice, workplace injuries, and wrongful death."
+  title="Practice Areas"
+  description="Browse our personal injury guides by practice area."
   canonicalURL={`${SITE.url}/categories`}
 >
-  <div class="container-main py-8 md:py-12">
-    <Breadcrumbs items={[{ label: 'Categories' }]} />
+  <div class="container-narrow py-10 md:py-14">
+    <Breadcrumbs items={[{ label: 'Practice Areas' }]} />
 
-    <h1 class="text-2xl md:text-3xl font-bold text-primary mb-2">Browse by Category</h1>
-    <p class="text-muted text-sm md:text-base mb-8 max-w-2xl">
-      Select a category below to find in-depth guides on specific types of personal injury claims.
+    <h1 class="text-2xl md:text-3xl mb-2">Practice Areas</h1>
+    <p class="text-muted mb-10 max-w-xl">
+      Select a practice area to explore our in-depth guides and insights.
     </p>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+    <div class="space-y-4">
       {CATEGORIES.map((cat) => {
         const info = CATEGORY_MAP[cat];
-        const count = articleCounts[cat];
+        const count = counts[cat];
         return (
           <a
             href={`/categories/${cat}`}
-            class="group flex items-start gap-4 bg-white rounded-lg border border-border p-5 md:p-6 no-underline hover:border-primary/20 hover:shadow-sm transition-all duration-200"
+            class="group block bg-white border border-border p-6 md:p-8 no-underline hover:border-navy/20 hover:bg-cream/30 transition-all"
           >
-            <CategoryIcon category={cat} />
-            <div class="min-w-0">
-              <h2 class="text-lg font-bold text-primary group-hover:text-primary-light transition-colors mb-1">{info.title}</h2>
-              <p class="text-sm text-muted leading-relaxed mb-2">{info.description}</p>
-              <span class="text-xs font-medium text-primary-light">
-                {count} {count === 1 ? 'article' : 'articles'} &rarr;
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <h2 class="text-lg md:text-xl text-navy group-hover:text-gold transition-colors mb-1">{info.title}</h2>
+                <p class="text-sm text-muted leading-relaxed mb-0">{info.description}</p>
+              </div>
+              <span class="font-label text-xs uppercase tracking-wider text-muted group-hover:text-navy flex-shrink-0 mt-1">
+                {count} {count === 1 ? 'Article' : 'Articles'} &rarr;
               </span>
             </div>
           </a>

@@ -10,11 +10,11 @@ const { currentPage, totalPages, baseUrl } = Astro.props;
 if (totalPages <= 1) return;
 ---
 
-<nav class="flex items-center justify-center gap-2 mt-10" aria-label="Pagination">
+<nav class="flex items-center justify-center gap-2 mt-12 pt-8 border-t border-border" aria-label="Pagination">
   {currentPage > 1 && (
     <a
       href={currentPage === 2 ? baseUrl : `${baseUrl}/page/${currentPage - 1}`}
-      class="px-3 py-2 text-sm border border-border rounded-md hover:bg-gray-50 no-underline text-primary transition-colors"
+      class="px-4 py-2 text-xs uppercase tracking-wider border border-border text-navy/60 no-underline hover:text-navy hover:border-navy/30 transition-colors font-label"
     >
       Previous
     </a>
@@ -25,10 +25,10 @@ if (totalPages <= 1) return;
     return (
       <a
         href={href}
-        class={`px-3 py-2 text-sm border rounded-md no-underline transition-colors ${
+        class={`px-4 py-2 text-xs font-label no-underline transition-colors ${
           isCurrent
-            ? 'bg-primary text-white border-primary'
-            : 'border-border hover:bg-gray-50 text-primary'
+            ? 'bg-navy text-white'
+            : 'border border-border text-navy/60 hover:text-navy hover:border-navy/30'
         }`}
         aria-current={isCurrent ? 'page' : undefined}
       >
@@ -39,7 +39,7 @@ if (totalPages <= 1) return;
   {currentPage < totalPages && (
     <a
       href={`${baseUrl}/page/${currentPage + 1}`}
-      class="px-3 py-2 text-sm border border-border rounded-md hover:bg-gray-50 no-underline text-primary transition-colors"
+      class="px-4 py-2 text-xs uppercase tracking-wider border border-border text-navy/60 no-underline hover:text-navy hover:border-navy/30 transition-colors font-label"
     >
       Next
     </a>

@@ -1,16 +1,19 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-primary: #1a365d;
-  --color-primary-light: #2a5290;
-  --color-accent: #b8860b;
-  --color-accent-light: #d4a017;
-  --color-surface: #fafaf9;
+  --color-navy: #0b1a2e;
+  --color-navy-light: #13273f;
+  --color-navy-mid: #1a3554;
+  --color-gold: #b8944c;
+  --color-gold-light: #d4b87a;
+  --color-white: #ffffff;
+  --color-cream: #f7f5f2;
+  --color-text: #1a1a1a;
   --color-muted: #6b7280;
   --color-border: #e5e7eb;
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-heading: 'Georgia', 'Times New Roman', serif;
-  --font-mono: 'Fira Code', 'Consolas', monospace;
+  --font-heading: 'Georgia', 'Times New Roman', 'Palatino', serif;
+  --font-body: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-label: system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
 
 @layer base {
@@ -20,65 +23,84 @@
   }
 
   body {
-    @apply bg-surface text-gray-900 leading-relaxed;
-    font-family: var(--font-sans);
+    @apply bg-white text-text leading-relaxed;
+    font-family: var(--font-body);
+    font-size: 16px;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
-    @apply text-primary font-bold;
+    @apply text-navy font-normal tracking-tight;
   }
 
-  h1 { @apply text-2xl md:text-3xl lg:text-4xl; }
-  h2 { @apply text-xl md:text-2xl mt-8 mb-3; }
-  h3 { @apply text-lg md:text-xl mt-6 mb-2; }
+  h1 { @apply text-3xl md:text-4xl lg:text-5xl leading-tight; }
+  h2 { @apply text-2xl md:text-3xl leading-snug mt-12 mb-4; }
+  h3 { @apply text-xl md:text-2xl leading-snug mt-8 mb-3; }
+  h4 { @apply text-lg md:text-xl leading-snug mt-6 mb-2; }
 
-  p { @apply mb-3 text-sm md:text-base leading-relaxed; }
+  p { @apply mb-4 text-base leading-relaxed; }
 
   a {
-    @apply text-primary-light underline decoration-primary-light/30 underline-offset-2 transition-colors;
-    &:hover { @apply decoration-primary-light; }
+    @apply text-navy-mid underline decoration-navy-mid/20 underline-offset-2 transition-colors;
+    &:hover { @apply text-gold decoration-gold/30; }
   }
 
-  ul, ol { @apply mb-3 pl-5; }
-  li { @apply mb-1.5 text-sm md:text-base; }
+  ul, ol { @apply mb-4 pl-6; }
+  li { @apply mb-1.5 text-base leading-relaxed; }
 
   blockquote {
-    @apply border-l-3 border-accent/40 bg-amber-50/30 pl-4 py-2 my-5 text-muted italic text-sm md:text-base;
+    @apply border-l-2 border-gold/40 bg-cream/50 pl-5 py-3 my-6 text-muted italic text-base;
   }
 
   table {
-    @apply w-full border-collapse my-5 text-xs md:text-sm;
-    th { @apply bg-primary text-white font-semibold p-2.5 text-left; }
-    td { @apply border border-border p-2.5; }
-    tr:nth-child(even) td { @apply bg-gray-50/50; }
+    @apply w-full border-collapse my-6 text-sm;
+    th { @apply bg-navy text-white font-medium p-3 text-left text-xs uppercase tracking-wider; }
+    td { @apply border border-border p-3; }
+    tr:nth-child(even) td { @apply bg-cream/50; }
   }
 
-  .article-body h2 { @apply border-b border-border pb-2 mt-10 mb-4; }
+  .article-body h2 {
+    @apply border-b border-border pb-2 mt-12 mb-4;
+  }
   .article-body h3 { @apply mt-8 mb-3; }
-  .article-body img { @apply rounded-lg my-5 max-w-full h-auto; }
-  .article-body p { @apply mb-4 leading-relaxed; }
-  .article-body ul, .article-body ol { @apply mb-4; }
+  .article-body img { @apply my-6 max-w-full h-auto; }
+  .article-body p { @apply mb-5 leading-relaxed; }
+  .article-body ul, .article-body ol { @apply mb-5; }
+  .article-body strong { @apply text-navy; }
 }
 
 @layer components {
+  .container-wide {
+    @apply max-w-7xl mx-auto px-5 sm:px-8 lg:px-12;
+  }
+
   .container-main {
-    @apply max-w-6xl mx-auto px-4 sm:px-6;
+    @apply max-w-6xl mx-auto px-5 sm:px-8;
   }
 
-  .container-article {
-    @apply max-w-3xl mx-auto px-4 sm:px-6;
+  .container-narrow {
+    @apply max-w-3xl mx-auto px-5 sm:px-8;
   }
 
-  .card {
-    @apply bg-white rounded-lg shadow-sm border border-border p-5 hover:shadow-md transition-shadow;
+  .section-label {
+    font-family: var(--font-label);
+    @apply text-xs uppercase tracking-[0.2em] text-muted mb-4;
   }
 
-  .tag {
-    @apply inline-block bg-gray-100 text-muted text-xs px-2 py-0.5 rounded-full font-medium;
+  .decorative-line {
+    @apply w-10 h-px bg-gold;
   }
 
   .ad-slot {
-    @apply bg-gray-100/50 border border-dashed border-gray-300 rounded-lg flex items-center justify-center text-muted text-xs min-h-[90px];
+    @apply bg-cream border border-dashed border-border/50 rounded flex items-center justify-center text-muted text-xs min-h-[90px];
+  }
+
+  .nav-link {
+    font-family: var(--font-label);
+    @apply text-sm text-navy/70 no-underline tracking-wide hover:text-gold transition-colors;
+  }
+
+  .nav-link-active {
+    @apply text-navy;
   }
 }

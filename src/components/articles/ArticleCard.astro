@@ -1,6 +1,6 @@
 ---
-import { getArticleUrl, truncate } from '../../utils/urlUtils';
-import { getCategoryTitle, getCategoryUrl } from '../../utils/urlUtils';
+import { getArticleUrl } from '../../utils/urlUtils';
+import { getCategoryTitle } from '../../utils/urlUtils';
 import type { CollectionEntry } from 'astro:content';
 
 export interface Props {
@@ -11,39 +11,36 @@ const { article } = Astro.props;
 const { data, slug } = article;
 ---
 
-<article class="group bg-white rounded-lg border border-border hover:border-primary/20 hover:shadow-sm transition-all duration-200 flex flex-col h-full">
+<article class="group bg-white border border-border hover:border-navy/20 transition-colors">
   {data.featuredImage && (
-    <a href={getArticleUrl(slug)} class="block overflow-hidden rounded-t-lg">
+    <a href={getArticleUrl(slug)} class="block overflow-hidden border-b border-border">
       <img
         src={data.featuredImage}
         alt={data.featuredImageAlt ?? data.title}
-        class="w-full h-40 object-cover group-hover:scale-[1.03] transition-transform duration-300"
+        class="w-full h-48 object-cover group-hover:opacity-90 transition-opacity"
         loading="lazy"
         width="600"
-        height="240"
+        height="288"
       />
     </a>
   )}
-  <div class="flex flex-col flex-1 p-5">
-    <div class="flex items-center gap-2 mb-2.5">
-      <a
-        href={getCategoryUrl(data.category)}
-        class="text-xs font-medium text-primary/60 no-underline hover:text-primary transition-colors"
-      >
+  <div class="p-6 md:p-8">
+    <div class="flex items-center gap-3 mb-3">
+      <span class="font-label text-xs uppercase tracking-wider text-gold">
         {getCategoryTitle(data.category)}
-      </a>
-      <span class="text-border">|</span>
-      <time datetime={data.pubDate.toISOString()} class="text-xs text-muted">
+      </span>
+      <span class="text-border">/</span>
+      <time datetime={data.pubDate.toISOString()} class="text-xs text-muted font-label">
         {data.pubDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
       </time>
     </div>
-    <h3 class="text-base md:text-lg font-bold mb-2 leading-snug flex-1">
-      <a href={getArticleUrl(slug)} class="no-underline text-primary hover:text-primary-light transition-colors">
+    <h3 class="text-lg md:text-xl mb-2 leading-snug">
+      <a href={getArticleUrl(slug)} class="no-underline text-navy hover:text-gold transition-colors">
         {data.title}
       </a>
     </h3>
-    <p class="text-sm text-muted leading-relaxed line-clamp-2">
-      {truncate(data.description, 130)}
+    <p class="text-sm text-muted leading-relaxed mb-0 line-clamp-2">
+      {data.description}
     </p>
   </div>
 </article>
